@@ -1,61 +1,54 @@
-// دالة لمحاكاة تسجيل الدخول
+// دالة تسجيل الدخول (محاكاة)
 document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    // هنا في الواقع يتم الاتصال بالباك اند للتحقق
-    
-    // محاكاة خطوة الـ 2FA
     const twoFactorDiv = document.getElementById('2fa-input');
     if (twoFactorDiv.style.display === 'none') {
-        alert('تم إرسال رمز التحقق إلى هاتفك (محاكاة)');
+        alert('تم إرسال رمز التحقق إلى جوالك');
         twoFactorDiv.style.display = 'block';
         return;
     }
-
-    // بعد إدخال الرمز والموافقة
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'flex';
 });
 
-// دالة التبديل بين الصفحات في القائمة الجانبية
+// دالة التبديل بين الصفحات
 function showPage(pageId) {
-    // إخفاء جميع الصفحات
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(page => {
-        page.classList.remove('active');
-    });
-
-    // إزالة التفعيل من القائمة الجانبية
-    const navItems = document.querySelectorAll('.sidebar nav ul li');
-    navItems.forEach(item => item.classList.remove('active'));
-
-    // إظهار الصفحة المطلوبة
-    document.getElementById('page-' + pageId).classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sidebar nav ul li').forEach(i => i.classList.remove('active'));
     
-    // تفعيل الزر في القائمة (بشكل تقريبي عبر الـ event target في تطبيق حقيقي)
+    document.getElementById('page-' + pageId).classList.add('active');
+    // إضافة كلاس active للزر في القائمة (اختياري، يحتاج تحديد العنصر بدقة)
 }
 
-// دالة تسجيل الخروج
+// دالة فتح/إغلاق القائمة الجانبية (للجوال)
+function toggleSidebar() {
+    // فقط إذا كانت الشاشة صغيرة (أقل من 768 بكسل) ننفذ هذا الكود لتجنب المشاكل في الكمبيوتر
+    if (window.innerWidth <= 768) {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+        
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+}
+
+// إغلاق القائمة عند تغيير حجم الشاشة للأكبر (إصلاح مشكلة الانتقال من جوال لكمبيوتر)
+window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+        document.getElementById('sidebar').classList.remove('active');
+        document.querySelector('.sidebar-overlay').classList.remove('active');
+    }
+});
+
 function logout() {
-    if(confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-        document.getElementById('main-app').style.display = 'none';
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('2fa-input').style.display = 'none';
-        document.getElementById('loginForm').reset();
+    if(confirm('تسجيل خروج؟')) {
+        location.reload(); // إعادة تحميل الصفحة للعودة للبداية
     }
 }
 
-// دوال النافذة المنبثقة (Modal)
-function openModal(modalId) {
-    document.getElementById(modalId).style.display = 'block';
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-}
-
-// إغلاق المودال عند النقر خارجه
+// Modal Functions
+function openModal(id) { document.getElementById(id).style.display = 'block'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 window.onclick = function(event) {
-    if (event.target.classList.contains('modal')) {
-        event.target.style.display = "none";
-    }
+    if (event.target.classList.contains('modal')) { event.target.style.display = "none"; }
 }
